@@ -1,8 +1,4 @@
 package aed;
-
-import java.util.*;
-
-// Todos los tipos de datos "Comparables" tienen el método compareTo()
 // elem1.compareTo(elem2) devuelve un entero. Si es mayor a 0, entonces elem1 > elem2
 public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     
@@ -63,20 +59,44 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
     }
 
     public void insertar(T elem){
-        T nodo = raiz.valor;
+        Nodo nodo = raiz;
+        Nodo nodo_elem = new Nodo(elem);
         boolean flag = true;
-        while (flag){
-            if (nodo != elem){
-                if(nodo < elem){
-                    nodo = nodo.derecha;
+        if (nodo == null){
+            raiz = nodo_elem;
+            cardinal = cardinal +1;
+            return;
+        } else {
+            while (flag){
+                if (nodo != elem){
+                    if(nodo.valor.compareTo(elem) < 0){
+                        if (nodo.izquierda.valor.compareTo(elem) == 0){
+                            nodo.izquierda = nodo_elem;
+                        } else {
+                            nodo = nodo.izquierda;
+                        }
+                    } else {
+                        if (nodo.derecha.valor.compareTo(elem) == 0){
+                            nodo.derecha = nodo_elem;
+                        } else {
+                        nodo = nodo.derecha;
+                        }
+                    }
+                } else {
+                    flag = false;
                 }
-            } else {
-                flag = false;
+            }
+            if (flag){
+                cardinal = cardinal + 1;
             }
         }
     }
 
     public boolean pertenece(T elem){
+        throw new UnsupportedOperationException("No implementada aun"); 
+    }
+
+    public boolean perteneceRecursivo(T elem, Nodo arbol){
         throw new UnsupportedOperationException("No implementada aun");
     }
 
