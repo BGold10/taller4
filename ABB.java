@@ -58,25 +58,25 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         return res.valor;
     }
 
-    public void insertar(T elem){
+    public void insertar(T elem){ 
         Nodo nodo = raiz;
         Nodo nodo_elem = new Nodo(elem);
         boolean flag = true;
-        if (nodo == null){
+        if (nodo == null){  //si es vacío, la raiz es el nodo.
             raiz = nodo_elem;
             cardinal = cardinal +1;
             return;
         } else {
             while (flag){
-                if (nodo != elem){
-                    if(nodo.valor.compareTo(elem) < 0){
-                        if (nodo.izquierda.valor.compareTo(elem) == 0){
+                if (nodo != elem){ // si el nodo.value en el que estoy no es elem
+                    if(nodo.valor.compareTo(elem) < 0){ // me fijo si es mayor que elem 
+                        if (nodo.izquierda.valor.compareTo(elem) == 0){ //me fijo si el proximo no es elem para  (me di cuenta que está mal porque estoy reemplazando a un elemento en caso de que no esté)
                             nodo.izquierda = nodo_elem;
-                        } else {
+                        } else { //sino me voy a la izquierda
                             nodo = nodo.izquierda;
                         }
                     } else {
-                        if (nodo.derecha.valor.compareTo(elem) == 0){
+                        if (nodo.derecha.valor.compareTo(elem) == 0){ //lo mismo
                             nodo.derecha = nodo_elem;
                         } else {
                         nodo = nodo.derecha;
