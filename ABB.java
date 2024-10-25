@@ -96,10 +96,6 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         throw new UnsupportedOperationException("No implementada aun"); 
     }
 
-    public boolean perteneceRecursivo(T elem, Nodo arbol){
-        throw new UnsupportedOperationException("No implementada aun");
-    }
-
     public void eliminar(T elem){
         throw new UnsupportedOperationException("No implementada aun");
     }
