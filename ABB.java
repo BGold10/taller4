@@ -65,68 +65,57 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
         if (nodo == null){
             raiz = nodo_elem;
             cardinal = cardinal +1;
-            return;
-        } else {
-            Nodo nodo_izq = nodo.izquierda;
-            Nodo nodo_der = nodo.derecha;
-            while (flag){
-                if (nodo.valor != elem){ // si el nodo.value en el que estoy no es elem
-                    if(nodo.valor.compareTo(elem) > 0){ // me fijo si es mayor que elem 
-                        if (nodo.izquierda != null){               
-                            if (nodo.izquierda.valor.compareTo(elem) < 0){ //me fijo si el proximo no es elem para  (me di cuenta que está mal porque estoy reemplazando a un elemento en caso de que no esté)
-                                nodo_izq = nodo.izquierda;
-                                nodo.izquierda = nodo_elem;
-                                nodo.izquierda.izquierda = nodo_izq;
-                                flag = false;
-                            } else { //sino me voy a la izquierda
-                                nodo = nodo.izquierda;
-                          }
-                        } else {
-                            nodo.izquierda = nodo_elem;
-                            flag = false;
-                        }
+            return; 
+        }
+        while (flag){
+            if (nodo.valor.compareTo(elem) != 0){ // si el nodo.value en el que estoy no es elem
+                if(nodo.valor.compareTo(elem) > 0){ // me fijo si es mayor que elem 
+                    if (nodo.izquierda != null){               
+                        nodo = nodo.izquierda;
+                        
                     } else {
-                        if (nodo.derecha != null){ 
-                            if (nodo.derecha.valor.compareTo(elem) > 0){ //lo mismo
-                                nodo_der = nodo.derecha;
-                                nodo.derecha = nodo_elem;
-                                nodo.derecha.derecha = nodo_der;
-                                flag = false;
-                            } else {
-                            nodo = nodo.derecha;
-                            } 
-                        }else {
-                            nodo.derecha = nodo_elem;
-                            flag = false;
-                        }
-                    }
-                    if (flag == false){
-                        cardinal += 1;
+                        nodo.izquierda = nodo_elem;
+                        nodo.izquierda.padre = nodo;
+                        flag = false;
                     }
                 } else {
-                    flag = false;
+                    if (nodo.derecha != null){ 
+                        nodo = nodo.derecha;
+                            
+                    }else {
+                        nodo.derecha = nodo_elem;
+                        nodo.derecha.padre = nodo;
+                        flag = false;
+                    }
                 }
-            }
+                if (flag == false){
+                    cardinal += 1;
+                }
+            }  else {
+                flag = false;
             }
         }
+    }
     public boolean pertenece(T elem){
         boolean res = false;
-        Nodo nodo_elem = new Nodo(elem);
         Nodo nodo = raiz;
+        Nodo nodo_padre = null;
         boolean flag = true;
         if (nodo == null){
             return res;
         } else{
             while (flag){
-                if (nodo.valor != nodo_elem.valor){
+                if (nodo.valor.compareTo(elem) != 0){ // LLegué al elem?
                     if (nodo.valor.compareTo(elem) > 0){
                         if (nodo.izquierda != null){
+                            nodo_padre = nodo;
                             nodo = nodo.izquierda;
                         } else {
                             return false;
                         }
                     } else {
                         if (nodo.derecha != null){
+                            nodo_padre = nodo;
                             nodo = nodo.derecha;
                         } else {
                             return false;
@@ -143,44 +132,105 @@ public class ABB<T extends Comparable<T>> implements Conjunto<T> {
 
     public void eliminar(T elem){
         Nodo nodo = raiz;
-        Nodo nodo_elem = new Nodo(elem);
         boolean flag = true;
         if (pertenece(elem) == false){
             return;
         } else {
-            Nodo nodo_izq = nodo.izquierda;
-            Nodo nodo_der = nodo.derecha;
+            //Nodo nodo_izq = nodo.izquierda;
+            //Nodo nodo_der = nodo.derecha;
+            
             flag = true;
             while(flag){
-                if (nodo.valor != elem){
-                    if (nodo.valor.compareTo(elem) > 0){
-                        nodo.padre = nodo;
+                Nodo nodo_padre = nodo.padre;
+                if (nodo.valor.compareTo(elem) != 0){ //ME MUEVO
+                    if (nodo.valor.compareTo(elem) > 0){ //me muevo a la izquierda
+                        nodo_padre = nodo;
                         nodo = nodo.izquierda;
-                    } else {
-                        nodo.padre = nodo;
+                    } else { //me muevo a la derecha
+                        nodo_padre = nodo;
                         nodo = nodo.derecha;
                     }
-                } else {
-                    if (nodo.izquierda == null){
+                } else { //Llegué al nodo!
+                    if (nodo == raiz && hijos(nodo) == 0){
                         nodo = null;
-                    } else if (nodo.derecha == null){
-                        nodo = null;
-                    } else if (nodo.derecha.derecha == null){
-
-                    } 
-                    nodo_izq = nodo.izquierda.izquierda;
-                    nodo_der = nodo.derecha.derecha;
-                    nodo = nodo.padre; //RECORDAR CAMBIARLO SIEMPRE QUE ME MUEVO    
-                    nodo.izquierda = nodo_izq;
-                    nodo.derecha = nodo_der;
-                    cardinal -= 1; 
+                        raiz = null;
+                    }else if (hijos(nodo) == 0){                    
+                        if (nodo.padre.valor.compareTo(elem) > 0){
+                            nodo.padre.izquierda = null;
+                        } else {
+                            nodo.padre.derecha = null;
+                        }
+                    }else if(nodo == raiz && hijos(nodo) == 1){
+                        raiz = raiz.izquierda;
+                    } else if (nodo == raiz && hijos(nodo) == 2){
+                        raiz = raiz.derecha;
+                    } else if(hijos(nodo) == 1){
+                        if (nodo_padre.izquierda == nodo) {
+                            nodo_padre.izquierda = nodo.izquierda;
+                        } else {
+                            nodo_padre.derecha = nodo.izquierda;
+                        }
+                        //nodo = nodo.izquierda;
+                        nodo.padre = nodo_padre;
+                        
+                    } else if (hijos(nodo) == 2){
+                        if (nodo_padre.izquierda == nodo) {
+                            nodo_padre.izquierda = nodo.derecha;
+                        } else {
+                            nodo_padre.derecha = nodo.derecha;
+                        }
+                        //nodo = nodo.derecha;
+                        nodo.padre = nodo_padre;
+                    } else if(nodo != raiz && hijos(nodo) == 3){
+                        //nodo_padre = nodo.padre;
+                        T min = minimo_desde_nodo(nodo.derecha);
+                        eliminar(minimo_desde_nodo(nodo.derecha));
+                        nodo.valor = min;
+                        //nodo.padre = nodo_padre;
+                        cardinal += 1;
+                    } else {
+                        //nodo_padre = nodo.padre;
+                        T min = minimo_desde_nodo(nodo.derecha);
+                        eliminar(minimo_desde_nodo(nodo.derecha));
+                        nodo.valor = min;
+                        //nodo.padre = nodo_padre;
+                        cardinal += 1;
+                        raiz.valor = min;    
+                    }
+                
                     flag = false;
                 }
-            }
+            } 
+            cardinal -= 1;
         }
     }
+    public T minimo_desde_nodo(Nodo nodo){
+        Nodo res = nodo;
+        boolean flag = true;
+        while(flag){
+            if (res.izquierda != null){
+                res = res.izquierda;
+            } else {
+                flag = false;
+            }
+            
+        }
+        return res.valor;
 
-    
+    }
+    public int hijos(Nodo nodo){
+        int res = 0;
+        if (nodo.izquierda != null){
+            res = 1;
+            if (nodo.derecha != null){
+                res = 3;
+            } 
+        } else if(nodo.derecha != null) {
+            res = 2;
+        }
+    return res;
+    }
+
 
     public String toString(){
         throw new UnsupportedOperationException("No implementada aun");
